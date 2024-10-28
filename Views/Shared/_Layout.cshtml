@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"] - Your Application</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header Section -->
+        @await Html.PartialAsync("_Header")
+
+        <div class="row">
+            <!-- Sidebar Section -->
+            <div class="col-md-3">
+                @await Html.PartialAsync("_Sidebar")
+            </div>
+
+            <!-- Main Body Section -->
+            <div class="col-md-9">
+                @RenderBody() <!-- Placeholder for individual page content -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

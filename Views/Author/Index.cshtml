@@ -1,0 +1,153 @@
+﻿@{
+    Layout = "_Layout";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Author List</h2>
+        <button class="btn btn-primary addnew">Add Author</button>
+        <table class="table mt-3" id="books">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Action</th>
+
+                </tr>
+            </thead>
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+    @* Modal for Create and Edit *@
+    <div class="modal fade" id="studentModal" tabindex="-1" role="dialog" aria-labelledby="studentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentModalLabel">Add/Edit Book</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="studentId" />
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="title" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Author</label>
+                        <input type="text" id="author" value="0" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Generation</label>
+                        <input type="text" id="generation" value="Gen21" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Published Year</label>
+                        <input type="text" id="year" value="2024" class="form-control" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveBook()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(".addnew").click(() => {
+            $("#studentModal").modal("show")
+        })
+
+        function saveBook() {
+
+            var book = {
+                Id: 0,
+                title: $('#title').val(),
+                AuthorId: $('#author').val(),
+                Genre: $('#generation').val(),
+                PublishedYear: $('#year').val(),
+
+            };
+
+            var url = '/Book/CreateBook';
+            var type = 'POST';
+
+            $.ajax({
+                url: url,
+                type: type,
+                contentType: 'application/json',
+                data: JSON.stringify(book),
+                success: function (data) {
+                    console.log(data)
+                    GetBooks()
+                }
+            });
+        }
+
+        function Delete(id) {
+            var student = {
+                id: id,
+                name: ""
+            };
+
+            var url = '/Student/Delete';
+            var type = 'DELETE';
+
+            $.ajax({
+                url: url + "/" + id,
+                type: type,
+                contentType: 'application/json',
+                data: JSON.stringify(student),
+                success: function (data) {
+                    console.log(data)
+                    GetBooks()
+                }
+            });
+        }
+
+        function GetBooks() {
+
+
+            var url = '/Book/GetBooks';
+            var type = 'GET';
+
+            $.ajax({
+                url: url,
+                type: type,
+                contentType: 'application/json',
+
+                success: function (res) {
+                    const { data: response } = res;
+                    $("#books tbody").html("")
+                    response.forEach(value => {
+                        $("#books tbody").append(`
+                                <tr>
+                                <td>${value.id}</td>
+                                <td>${value.title}</td>
+                                <td><button onclick='Delete(${value.id})' class='btn btn-danger'>Delete</button></td>
+                                </tr>
+
+
+                                `)
+                    })
+                    console.log(response)
+                }
+            });
+        }
+        GetBooks()
+    </script>
+</body>
+</html>
